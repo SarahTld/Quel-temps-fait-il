@@ -1,37 +1,37 @@
 <template>
   <div class="flex flex-col items-center py-10 px-4">
     <div class="w-full max-w-2xl">
-      <h1 class="text-3xl font-bold text-blue-700 mb-8 text-center">Paramètres</h1>
+      <h1 class="text-3xl font-bold text-blue-700 dark:text-blue-200 mb-8 text-center">Paramètres</h1>
       
       <div class="space-y-6">
         <!-- Unités de température -->
-        <div class="bg-white/80 backdrop-blur-md rounded-2xl p-6 shadow-lg border border-white/40">
-          <h2 class="text-xl font-semibold text-blue-800 mb-4">Unités de température</h2>
-          <div class="space-y-3">
-            <label class="flex items-center space-x-3 cursor-pointer">
-              <input 
-                type="radio" 
-                v-model="settings.units" 
-                value="metric" 
-                class="text-blue-600 focus:ring-blue-500"
-              />
-              <span class="text-blue-700">Celsius (°C)</span>
-            </label>
-            <label class="flex items-center space-x-3 cursor-pointer">
-              <input 
-                type="radio" 
-                v-model="settings.units" 
-                value="imperial" 
-                class="text-blue-600 focus:ring-blue-500"
-              />
-              <span class="text-blue-700">Fahrenheit (°F)</span>
-            </label>
-          </div>
+        <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-2xl p-6 shadow-lg border border-white/40 dark:border-gray-700/40">
+          <h2 class="text-xl font-semibold text-blue-800 dark:text-blue-100 mb-4">Unités de température</h2>
+                      <div class="space-y-3">
+              <label class="flex items-center space-x-3 cursor-pointer">
+                <input 
+                  type="radio" 
+                  v-model="settings.units" 
+                  value="metric" 
+                  class="text-blue-600 focus:ring-blue-500"
+                />
+                <span class="text-blue-700 dark:text-blue-200">Celsius (°C)</span>
+              </label>
+              <label class="flex items-center space-x-3 cursor-pointer">
+                <input 
+                  type="radio" 
+                  v-model="settings.units" 
+                  value="imperial" 
+                  class="text-blue-600 focus:ring-blue-500"
+                />
+                <span class="text-blue-700 dark:text-blue-200">Fahrenheit (°F)</span>
+              </label>
+            </div>
         </div>
 
         <!-- Thème -->
-        <div class="bg-white/80 backdrop-blur-md rounded-2xl p-6 shadow-lg border border-white/40">
-          <h2 class="text-xl font-semibold text-blue-800 mb-4">Thème</h2>
+        <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-2xl p-6 shadow-lg border border-white/40 dark:border-gray-700/40">
+          <h2 class="text-xl font-semibold text-blue-800 dark:text-blue-100 mb-4">Thème</h2>
           <div class="space-y-3">
             <label class="flex items-center space-x-3 cursor-pointer">
               <input 
@@ -40,7 +40,7 @@
                 value="light" 
                 class="text-blue-600 focus:ring-blue-500"
               />
-              <span class="text-blue-700">Clair ☀️</span>
+              <span class="text-blue-700 dark:text-blue-200">Clair ☀️</span>
             </label>
             <label class="flex items-center space-x-3 cursor-pointer">
               <input 
@@ -49,7 +49,7 @@
                 value="dark" 
                 class="text-blue-600 focus:ring-blue-500"
               />
-              <span class="text-blue-700">Sombre 🌙</span>
+              <span class="text-blue-700 dark:text-blue-200">Sombre 🌙</span>
             </label>
             <label class="flex items-center space-x-3 cursor-pointer">
               <input 
@@ -58,45 +58,17 @@
                 value="auto" 
                 class="text-blue-600 focus:ring-blue-500"
               />
-              <span class="text-blue-700">Automatique (selon l'heure) ⏰</span>
+              <span class="text-blue-700 dark:text-blue-200">Automatique (selon l'heure) ⏰</span>
             </label>
           </div>
         </div>
 
-        <!-- Notifications -->
-        <div class="bg-white/80 backdrop-blur-md rounded-2xl p-6 shadow-lg border border-white/40">
-          <h2 class="text-xl font-semibold text-blue-800 mb-4">Notifications</h2>
-          <div class="space-y-3">
-            <label class="flex items-center space-x-3 cursor-pointer">
-              <input 
-                type="checkbox" 
-                v-model="settings.notifications" 
-                class="text-blue-600 focus:ring-blue-500 rounded"
-              />
-              <span class="text-blue-700">Activer les notifications météo</span>
-            </label>
-            <label class="flex items-center space-x-3 cursor-pointer">
-              <input 
-                type="checkbox" 
-                v-model="settings.rainAlert" 
-                class="text-blue-600 focus:ring-blue-500 rounded"
-                :disabled="!settings.notifications"
-              />
-              <span class="text-blue-700" :class="{ 'opacity-50': !settings.notifications }">Alerte pluie</span>
-            </label>
-          </div>
-        </div>
+
 
         <!-- Données -->
-        <div class="bg-white/80 backdrop-blur-md rounded-2xl p-6 shadow-lg border border-white/40">
-          <h2 class="text-xl font-semibold text-blue-800 mb-4">Données</h2>
+        <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-2xl p-6 shadow-lg border border-white/40 dark:border-gray-700/40">
+          <h2 class="text-xl font-semibold text-blue-800 dark:text-blue-100 mb-4">Données</h2>
           <div class="space-y-4">
-            <button 
-              @click="clearHistory" 
-              class="w-full bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors"
-            >
-              Effacer l'historique des recherches
-            </button>
             <button 
               @click="clearFavorites" 
               class="w-full bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg transition-colors"
@@ -113,9 +85,9 @@
         </div>
 
         <!-- Informations -->
-        <div class="bg-white/80 backdrop-blur-md rounded-2xl p-6 shadow-lg border border-white/40">
-          <h2 class="text-xl font-semibold text-blue-800 mb-4">Informations</h2>
-          <div class="space-y-2 text-sm text-blue-600">
+        <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-2xl p-6 shadow-lg border border-white/40 dark:border-gray-700/40">
+          <h2 class="text-xl font-semibold text-blue-800 dark:text-blue-100 mb-4">Informations</h2>
+          <div class="space-y-2 text-sm text-blue-600 dark:text-blue-300">
             <p>🌤️ <strong>Quel temps fait-il ?</strong> v1.0</p>
             <p>Données météo fournies par OpenWeatherMap</p>
             <p>Développé avec Nuxt 3 et Tailwind CSS</p>
@@ -129,11 +101,12 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue'
 
+const { applyTheme, theme: currentTheme } = useTheme()
+const { changeUnits } = useUnits()
+
 const settings = ref({
   units: 'metric',
-  theme: 'auto',
-  notifications: false,
-  rainAlert: false
+  theme: 'auto'
 })
 
 onMounted(() => {
@@ -143,7 +116,12 @@ onMounted(() => {
 function loadSettings() {
   const saved = localStorage.getItem('weather-settings')
   if (saved) {
-    settings.value = { ...settings.value, ...JSON.parse(saved) }
+    const savedSettings = JSON.parse(saved)
+    settings.value = { ...settings.value, ...savedSettings }
+    // Appliquer le thème sauvegardé
+    if (savedSettings.theme) {
+      applyTheme(savedSettings.theme)
+    }
   }
 }
 
@@ -151,15 +129,21 @@ function saveSettings() {
   localStorage.setItem('weather-settings', JSON.stringify(settings.value))
 }
 
-// Sauvegarder automatiquement quand les paramètres changent
-watch(settings, saveSettings, { deep: true })
+// Sauvegarder automatiquement quand les paramètres changent et appliquer le thème
+watch(() => settings.value.theme, (newTheme) => {
+  applyTheme(newTheme)
+  saveSettings()
+})
 
-function clearHistory() {
-  if (confirm('Êtes-vous sûr de vouloir effacer tout l\'historique des recherches ?')) {
-    localStorage.removeItem('weather-history')
-    alert('Historique effacé !')
-  }
-}
+watch(() => settings.value.units, (newUnits) => {
+  saveSettings()
+  // Changer les unités et notifier les autres composants
+  changeUnits(newUnits)
+})
+
+
+
+
 
 function clearFavorites() {
   if (confirm('Êtes-vous sûr de vouloir effacer tous vos favoris ?')) {

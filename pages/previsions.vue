@@ -1,16 +1,16 @@
 <template>
   <div class="flex flex-col items-center py-10 px-4">
     <div class="w-full max-w-4xl">
-      <h1 class="text-3xl font-bold text-blue-700 mb-8 text-center">Prévisions sur 5 jours</h1>
+      <h1 class="text-3xl font-bold text-blue-700 dark:text-blue-200 mb-8 text-center">Prévisions sur 5 jours</h1>
       
       <!-- Recherche -->
-      <div class="bg-white/80 backdrop-blur-md rounded-2xl p-6 mb-8 shadow-lg border border-white/40">
+      <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-2xl p-6 mb-8 shadow-lg border border-white/40 dark:border-gray-700/40">
         <form class="flex gap-3" @submit.prevent="fetchForecast">
           <input 
             v-model="city" 
             type="text" 
             placeholder="Entrez une ville pour les prévisions..." 
-            class="flex-1 px-4 py-3 rounded-full border border-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white/70 placeholder:text-blue-300 text-blue-900 font-medium"
+            class="flex-1 px-4 py-3 rounded-full border border-blue-200 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-500 bg-white/70 dark:bg-gray-700/70 placeholder:text-blue-300 dark:placeholder:text-gray-400 text-blue-900 dark:text-gray-100 font-medium"
           />
           <button 
             type="submit" 
@@ -21,7 +21,7 @@
           <button 
             type="button" 
             @click="getLocationForecast" 
-            class="bg-white/80 text-blue-700 px-4 py-3 rounded-full shadow hover:bg-blue-100 border border-blue-200 transition-all duration-200"
+            class="bg-white/80 dark:bg-gray-700/80 text-blue-700 dark:text-blue-300 px-4 py-3 rounded-full shadow hover:bg-blue-100 dark:hover:bg-gray-600 border border-blue-200 dark:border-gray-600 transition-all duration-200"
             title="Prévisions de ma position"
           >
             📍
@@ -30,38 +30,31 @@
       </div>
 
       <!-- Erreur -->
-      <div v-if="error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6 text-center">
+      <div v-if="error" class="bg-red-100 dark:bg-red-900/20 border border-red-400 dark:border-red-600 text-red-700 dark:text-red-300 px-4 py-3 rounded mb-6 text-center">
         {{ error }}
       </div>
 
       <!-- Prévisions -->
-      <div v-if="forecast" class="space-y-6">
-        <div v-for="(day, index) in forecast" :key="index" class="bg-white/80 backdrop-blur-md rounded-2xl p-6 shadow-lg border border-white/40">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-4">
-              <img :src="day.icon" :alt="day.description" class="w-16 h-16" />
-              <div>
-                <h3 class="text-xl font-semibold text-blue-800">{{ day.date }}</h3>
-                <p class="text-blue-600 capitalize">{{ day.description }}</p>
-              </div>
-            </div>
-            <div class="text-right">
-              <div class="text-3xl font-bold text-blue-800">{{ day.temp }}°C</div>
-              <div class="text-sm text-blue-500">
+      <div v-if="forecast" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+        <div v-for="(day, index) in forecast" :key="index" class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-2xl p-4 shadow-lg border border-white/40 dark:border-gray-700/40">
+                      <div class="flex flex-col items-center text-center">
+              <h3 class="text-lg font-semibold text-blue-800 dark:text-blue-100 mb-2">{{ day.date }}</h3>
+              <img :src="day.icon" :alt="day.description" class="w-12 h-12 mb-2" />
+              <p class="text-sm text-blue-600 dark:text-blue-300 capitalize mb-2">{{ day.description }}</p>
+              <div class="text-2xl font-bold text-blue-800 dark:text-blue-100 mb-1">{{ day.temp }}°C</div>
+              <div class="text-xs text-blue-500 dark:text-blue-300 mb-3">
                 Min: {{ day.tempMin }}°C | Max: {{ day.tempMax }}°C
               </div>
+              <div class="text-xs text-blue-600 dark:text-blue-300 space-y-1">
+                <div>Humidité: {{ day.humidity }}%</div>
+                <div>Vent: {{ day.wind }} km/h</div>
+              </div>
             </div>
-          </div>
-          <div class="mt-4 grid grid-cols-2 gap-4 text-sm text-blue-600">
-            <div>Humidité: {{ day.humidity }}%</div>
-            <div>Vent: {{ day.wind }} km/h</div>
-          </div>
         </div>
       </div>
 
       <!-- État vide -->
-      <div v-else-if="!error" class="text-center text-blue-600">
-        <div class="text-6xl mb-4">🌤️</div>
+      <div v-else-if="!error" class="text-center text-blue-600 dark:text-blue-300">
         <p class="text-xl">Entrez une ville pour voir les prévisions météo</p>
       </div>
     </div>
@@ -69,7 +62,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 
 const city = ref('')
 const forecast = ref(null)
@@ -79,12 +72,23 @@ const config = useRuntimeConfig()
 const API_KEY = config.public.openweatherKey
 const API_URL = 'https://api.openweathermap.org/data/2.5/forecast'
 
+const { getApiUnits, formatTemperature, formatWindSpeed } = useUnits()
+
+onMounted(() => {
+  // Écouter les changements d'unités
+  window.addEventListener('units-changed', () => {
+    if (forecast.value) {
+      fetchForecast()
+    }
+  })
+})
+
 async function fetchForecast() {
   error.value = ''
   if (!city.value) return
   
   try {
-    const url = `${API_URL}?q=${encodeURIComponent(city.value)}&appid=${API_KEY}&units=metric&lang=fr`
+    const url = `${API_URL}?q=${encodeURIComponent(city.value)}&appid=${API_KEY}&units=${getApiUnits()}&lang=fr`
     const res = await fetch(url)
     
     if (!res.ok) {
@@ -110,11 +114,11 @@ function processForecastData(data) {
     if (!dailyData[dayKey]) {
       dailyData[dayKey] = {
         date: dayKey,
-        temp: Math.round(item.main.temp),
-        tempMin: Math.round(item.main.temp_min),
-        tempMax: Math.round(item.main.temp_max),
+        temp: formatTemperature(item.main.temp),
+        tempMin: formatTemperature(item.main.temp_min),
+        tempMax: formatTemperature(item.main.temp_max),
         humidity: item.main.humidity,
-        wind: Math.round(item.wind.speed),
+        wind: formatWindSpeed(item.wind.speed),
         description: item.weather[0].description,
         icon: `https://openweathermap.org/img/wn/${item.weather[0].icon}@2x.png`
       }
@@ -131,7 +135,7 @@ function getLocationForecast() {
   navigator.geolocation.getCurrentPosition(async (pos) => {
     try {
       const { latitude, longitude } = pos.coords
-      const res = await fetch(`${API_URL}?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric&lang=fr`)
+      const res = await fetch(`${API_URL}?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=${getApiUnits()}&lang=fr`)
       
       if (!res.ok) throw new Error('Ville non trouvée')
       
