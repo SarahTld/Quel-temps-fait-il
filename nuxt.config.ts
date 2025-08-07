@@ -4,6 +4,21 @@ import { defineNuxtConfig } from 'nuxt/config'
 export default defineNuxtConfig({
   compatibilityDate: '2025-05-15',
   devtools: { enabled: true },
+  
+  // Configuration pour le déploiement statique
+  ssr: false,
+  nitro: {
+    prerender: {
+      routes: ['/']
+    }
+  },
+  
+  // Configuration pour GitHub Pages
+  app: {
+    baseURL: process.env.NODE_ENV === 'production' ? '/Quel-temps-fait-il/' : '/',
+    buildAssetsDir: '/assets/'
+  },
+  
   css: ['@/assets/css/tailwind.css'],
   postcss: {
     plugins: {
